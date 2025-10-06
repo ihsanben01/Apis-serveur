@@ -1,7 +1,7 @@
-package com.apis.repository;
+package prototypeapis.repository;
 
-import com.apis.model.Deposit;
-import com.apis.model.DepositStatus;
+import prototypeapis.model.Deposit;
+import prototypeapis.model.DepositStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

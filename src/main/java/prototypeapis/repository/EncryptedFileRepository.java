@@ -1,6 +1,6 @@
-package com.apis.repository;
+package prototypeapis.repository;
 
-import com.apis.model.EncryptedFile;
+import prototypeapis.model.EncryptedFile;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,4 +1,4 @@
-package com.apis.model;
+package prototypeapis.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -88,6 +88,3 @@ public class Deposit {
     public void setStatus(DepositStatus status) { this.status = status; }
 }
 
-enum DepositStatus {
-    ACTIVE, EXPIRED, DELETED
-}

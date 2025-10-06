@@ -1,8 +1,8 @@
-package com.apis.repository;
+package prototypeapis.repository;
 
-import com.apis.model.AccessToken;
-import com.apis.model.Deposit;
-import com.apis.model.TokenType;
+import prototypeapis.model.AccessToken;
+import prototypeapis.model.Deposit;
+import prototypeapis.model.TokenType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

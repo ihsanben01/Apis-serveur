@@ -1,4 +1,4 @@
-package com.apis.model;
+package prototypeapis.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
@@ -60,8 +60,4 @@ public class AccessToken {
 
     public LocalDateTime getExpiresDate() { return expiresDate; }
     public void setExpiresDate(LocalDateTime expiresDate) { this.expiresDate = expiresDate; }
-}
-
-enum TokenType {
-    SHARE, MANAGE
 }

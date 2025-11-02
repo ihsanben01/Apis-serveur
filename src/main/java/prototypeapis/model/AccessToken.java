@@ -12,7 +12,7 @@ public class AccessToken {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "deposit_id", nullable = false)
     private Deposit deposit;
 

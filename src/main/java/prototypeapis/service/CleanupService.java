@@ -20,11 +20,11 @@ public class CleanupService {
     private static final Logger logger = LoggerFactory.getLogger(CleanupService.class);
 
     private final DepositRepository depositRepository;
-    private final FileStorageService fileStorageService;
+    private final GarageStorageService fileStorageService;
 
     @Autowired
     public CleanupService(DepositRepository depositRepository,
-                          FileStorageService fileStorageService) {
+                          GarageStorageService fileStorageService) {
         this.depositRepository = depositRepository;
         this.fileStorageService = fileStorageService;
     }
@@ -49,7 +49,7 @@ public class CleanupService {
                 depositRepository.save(deposit);
 
                 // Supprimer le fichier chiffré
-                fileStorageService.deleteEncryptedFile(deposit.getId());
+//                fileStorageService.deleteEncryptedFile(deposit.getId());
 
                 cleanedCount++;
                 logger.info("Dépôt expiré nettoyé: {}", deposit.getId());

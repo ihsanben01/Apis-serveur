@@ -1,24 +1,14 @@
 package prototypeapis.model;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-@Document(collection = "encrypted_files")
 public class EncryptedFile {
 
-    @Id
-    private String id;
-
     private UUID depositId;
-
-    private byte[] encryptedData; // ✅ Seulement les données chiffrées (le backend ne peut pas les lire)
-
+    private byte[] encryptedData;  // ✅ The encrypted file bytes stored in Garage
     private LocalDateTime uploadDate;
 
-
-    // Constructeurs
     public EncryptedFile() {
         this.uploadDate = LocalDateTime.now();
     }
@@ -29,10 +19,7 @@ public class EncryptedFile {
         this.encryptedData = encryptedData;
     }
 
-    // Getters et Setters
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
-
+    // Getters & Setters
     public UUID getDepositId() { return depositId; }
     public void setDepositId(UUID depositId) { this.depositId = depositId; }
 

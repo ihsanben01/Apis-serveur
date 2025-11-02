@@ -4,7 +4,6 @@ import prototypeapis.dto.FileUploadResponse;
 import prototypeapis.model.Deposit;
 import prototypeapis.model.EncryptedFile;
 import prototypeapis.service.DepositService;
-import prototypeapis.service.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -13,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import prototypeapis.service.GarageStorageService;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -23,11 +23,11 @@ import java.util.UUID;
 @CrossOrigin(origins = "*") // À configurer proprement en production
 public class FileController {
 
-    private final FileStorageService fileStorageService;
+    private final GarageStorageService fileStorageService;
     private final DepositService depositService;
 
     @Autowired
-    public FileController(FileStorageService fileStorageService,
+    public FileController(GarageStorageService fileStorageService,
                           DepositService depositService) {
         this.fileStorageService = fileStorageService;
         this.depositService = depositService;
@@ -44,7 +44,7 @@ public class FileController {
         try {
             // Vérifier que le dépôt existe et est actif
             Optional<Deposit> depositOpt = depositService.getDepositInfo(depositId)
-                    .map(response -> new Deposit()); // Simplification
+                    .map(response ->    new Deposit()); // Simplification
 
             if (depositOpt.isEmpty()) {
                 return ResponseEntity.badRequest()
@@ -52,13 +52,12 @@ public class FileController {
             }
 
             // Stocker le fichier chiffré
-            String fileId = fileStorageService.storeEncryptedFile(depositId, file);
+             fileStorageService.uploadFile( file);
 
             FileUploadResponse response = new FileUploadResponse(
                     true,
                     "Fichier uploadé avec succès",
-                    fileId
-            );
+                    depositId.toString()          );
 
             return ResponseEntity.ok(response);
 
@@ -85,26 +84,23 @@ public class FileController {
             }
 
             Deposit deposit = depositOpt.get();
-            Optional<EncryptedFile> fileOpt = fileStorageService.getEncryptedFile(deposit.getId());
-
-            if (fileOpt.isEmpty()) {
+            byte[] fileBytes = fileStorageService.downloadFile("encrypted_"+deposit.getFileName());
+            if (fileBytes == null || fileBytes.length == 0) {
                 return ResponseEntity.notFound().build();
             }
-
-            EncryptedFile encryptedFile = fileOpt.get();
-
+            EncryptedFile encryptedFile = new EncryptedFile();
             // Incrémenter le compteur de téléchargements
             depositService.incrementDownloadCount(deposit.getId());
 
             // Préparer la réponse
-            ByteArrayResource resource = new ByteArrayResource(encryptedFile.getEncryptedData());
+            ByteArrayResource resource = new ByteArrayResource(fileBytes  );
+
 
             return ResponseEntity.ok()
                     .contentType(MediaType.APPLICATION_OCTET_STREAM)
                     .header(HttpHeaders.CONTENT_DISPOSITION,
                             "attachment; filename=\"encrypted_" + deposit.getFileName() + "\"")
-                    .header(HttpHeaders.CONTENT_LENGTH,
-                            String.valueOf(encryptedFile.getEncryptedData().length))
+                    .header(HttpHeaders.CONTENT_LENGTH, String.valueOf(fileBytes.length))
                     .body(resource);
 
         } catch (Exception e) {
@@ -112,17 +108,17 @@ public class FileController {
         }
     }
 
-    /**
-     * Récupère les informations d'un fichier
-     */
-    @GetMapping("/{depositId}/info")
-    public ResponseEntity<?> getFileInfo(@PathVariable UUID depositId) {
-        boolean exists = fileStorageService.fileExists(depositId);
-
-        if (exists) {
-            return ResponseEntity.ok().body("{\"exists\": true}");
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
+//    /**
+//     * Récupère les informations d'un fichier
+//     */
+//    @GetMapping("/{depositId}/info")
+//    public ResponseEntity<?> getFileInfo(@PathVariable UUID depositId) {
+//        boolean exists = fileStorageService.fileExists(depositId);
+//
+//        if (exists) {
+//            return ResponseEntity.ok().body("{\"exists\": true}");
+//        } else {
+//            return ResponseEntity.notFound().build();
+//        }
+//    }
 }
